@@ -3,47 +3,20 @@ import requests
 
 def buscar_precos():
 
-    produtos = [
-        "Samsung Galaxy S25 FE",
-        "POCO X8 Pro Max"
-    ]
+    url = "https://api.mercadolibre.com/sites/MLB/search"
 
-    resultados = []
+    parametros = {
+        "q": "Samsung Galaxy S25 FE",
+        "limit": 5
+    }
 
+    resposta = requests.get(
+        url,
+        params=parametros,
+        timeout=10
+    )
 
-    for produto in produtos:
+    print("Status:", resposta.status_code)
+    print("Resposta:", resposta.text[:500])
 
-        url = "https://api.mercadolibre.com/sites/MLB/search"
-
-        parametros = {
-            "q": produto,
-            "limit": 5
-        }
-
-
-        resposta = requests.get(
-            url,
-            params=parametros,
-            timeout=10
-        )
-
-
-        dados = resposta.json()
-
-
-        for item in dados.get("results", []):
-
-            resultados.append({
-
-                "nome": item["title"],
-
-                "preco": item["price"],
-
-                "loja": "Mercado Livre",
-
-                "link": item["permalink"]
-
-            })
-
-
-    return resultados
+    return []
