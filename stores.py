@@ -27,6 +27,9 @@ def buscar_precos():
 
         texto = soup.get_text(" ", strip=True)
 
+        print("Produto pesquisado:", produto)
+        print("Texto recebido:", texto[:300])
+
 
         precos = re.findall(
             r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
@@ -34,7 +37,12 @@ def buscar_precos():
         )
 
 
-        for preco_texto in precos[:3]:
+        print("Preços encontrados:", precos)
+
+
+        if precos:
+
+            preco_texto = precos[0]
 
             preco = (
                 preco_texto
@@ -44,7 +52,6 @@ def buscar_precos():
                 .strip()
             )
 
-
             resultados.append({
                 "nome": produto,
                 "preco": float(preco),
@@ -52,6 +59,7 @@ def buscar_precos():
                 "link": url
             })
 
-print("Quantidade de ofertas encontradas:", len(resultados))
+
+    print("Total de ofertas:", len(resultados))
 
     return resultados
