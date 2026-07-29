@@ -1,63 +1,25 @@
 from duckduckgo_search import DDGS
-import re
 
 
 def buscar_precos():
 
-    produtos = [
-        "Samsung Galaxy S25 FE preço",
-        "POCO X8 Pro Max preço"
-    ]
-
     resultados = []
 
+    with DDGS() as ddgs:
 
-    for produto in produtos:
+        pesquisa = ddgs.text(
+            "Samsung Galaxy S25 FE preço Brasil",
+            max_results=5
+        )
 
-        with DDGS() as ddgs:
+        for item in pesquisa:
 
-            pesquisas = ddgs.text(
-                produto,
-                max_results=5
-            )
-
-
-            for resultado in pesquisas:
-
-                texto = resultado.get("title", "") + " " + resultado.get("body", "")
-
-                precos = re.findall(
-                    r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
-                    texto
-                )
-
-
-                if precos:
-
-                    preco_texto = precos[0]
-
-                    preco = (
-                        preco_texto
-                        .replace("R$", "")
-                        .replace(".", "")
-                        .replace(",", ".")
-                        .strip()
-                    )
-
-
-                    resultados.append({
-
-                        "nome": produto.replace(" preço", ""),
-
-                        "preco": float(preco),
-
-                        "loja": resultado.get("title", "Loja encontrada"),
-
-                        "link": resultado.get("href", "")
-
-                    })
-
-                    break
+            resultados.append({
+                "nome": item["title"],
+                "preco": 9999,
+                "loja": "Teste",
+                "link": item["href"]
+            })
 
 
     return resultados
