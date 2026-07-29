@@ -30,14 +30,8 @@ jobs:
         run: |
           pip install requests
           pip install beautifulsoup4
-          pip install playwright
 
 
-      - name: Instalar navegador
+      - name: Executar monitor
         run: |
-          playwright install chromium
-
-
-      - name: Testar TudoCelular
-        run: |
-          python teste_tudocelular.py
+          python monitor.py
