@@ -7,30 +7,40 @@ from urllib.parse import quote
 def buscar_precos():
 
     produtos = [
-        "Samsung Galaxy S25 FE",
-        "POCO X8 Pro Max"
+        "Samsung Galaxy S25 FE preço",
+        "POCO X8 Pro Max preço"
     ]
 
     resultados = []
 
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
     for produto in produtos:
 
-        url = "https://www.google.com/search?tbm=shop&q=" + quote(produto)
+        url = "https://www.google.com/search?q=" + quote(produto)
 
-        headers = {
-            "User-Agent": "Mozilla/5.0"
-        }
+        resposta = requests.get(
+            url,
+            headers=headers,
+            timeout=10
+        )
 
-        resposta = requests.get(url, headers=headers)
+        soup = BeautifulSoup(
+            resposta.text,
+            "html.parser"
+        )
 
-        soup = BeautifulSoup(resposta.text, "lxml")
+        texto = soup.get_text(
+            " ",
+            strip=True
+        )
 
-
-        textos = soup.get_text(" ", strip=True)
 
         precos = re.findall(
-            r"R\$ ?\d{1,4}(?:\.\d{3})?,?\d{0,2}",
-            textos
+            r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
+            texto
         )
 
 
@@ -46,11 +56,17 @@ def buscar_precos():
                 .strip()
             )
 
+
             resultados.append({
-                "nome": produto,
+
+                "nome": produto.replace(" preço", ""),
+
                 "preco": float(preco),
-                "loja": "Google Shopping",
+
+                "loja": "Pesquisa Google",
+
                 "link": url
+
             })
 
 
