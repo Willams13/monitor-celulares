@@ -22,7 +22,7 @@ jobs:
         run: python teste_tudocelular.py
           pip install -r requirements.txt
 
-      - name: Testar TudoCelular
+      - name: Executar TudoCelular
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
