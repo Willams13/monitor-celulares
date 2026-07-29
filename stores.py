@@ -1,22 +1,12 @@
-import requests
-
-
 def buscar_precos():
 
-    url = "https://api.mercadolibre.com/sites/MLB/search"
+    print("TESTE STORES FUNCIONANDO")
 
-    parametros = {
-        "q": "Samsung Galaxy S25 FE",
-        "limit": 5
-    }
-
-    resposta = requests.get(
-        url,
-        params=parametros,
-        timeout=10
-    )
-
-    print("Status:", resposta.status_code)
-    print("Resposta:", resposta.text[:500])
-
-    return []
+    return [
+        {
+            "nome": "Samsung Galaxy S25 FE TESTE",
+            "preco": 2500,
+            "loja": "Teste",
+            "link": "https://google.com"
+        }
+    ]
