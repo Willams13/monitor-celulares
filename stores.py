@@ -52,5 +52,5 @@ def buscar_precos():
                 "link": url
             })
 
-
+print("Quantidade de ofertas encontradas:", len(resultados))
     return resultados
