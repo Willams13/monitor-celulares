@@ -1,37 +1,42 @@
 import requests
-from bs4 import BeautifulSoup
 
 
 def buscar_precos():
 
-    links = [
-        "https://www.tudocelular.com/Samsung/fichas-tecnicas/n10155/Samsung-Galaxy-S25-FE.htm",
-        "https://www.tudocelular.com/Poco/fichas-tecnicas/n10349/Poco-X8-Pro-Max.html"
+    produtos = [
+        "Samsung Galaxy S25 FE",
+        "POCO X8 Pro Max"
     ]
 
-    for link in links:
+    resultados = []
+
+    for produto in produtos:
+
+        url = "https://api.mercadolibre.com/sites/MLB/search"
+
+        params = {
+            "q": produto,
+            "limit": 5
+        }
 
         resposta = requests.get(
-            link,
-            headers={
-                "User-Agent": "Mozilla/5.0"
-            },
+            url,
+            params=params,
             timeout=10
         )
 
-        soup = BeautifulSoup(
-            resposta.text,
-            "html.parser"
-        )
+        dados = resposta.json()
 
-        texto = soup.get_text(
-            " ",
-            strip=True
-        )
+        for item in dados.get("results", []):
 
-        print("LINK:", link)
-        print(texto[:1000])
-        print("------------------------")
+            resultados.append({
+                "nome": item["title"],
+                "preco": item["price"],
+                "loja": "Mercado Livre",
+                "link": item["permalink"]
+            })
 
 
-    return []
+    print("Ofertas encontradas:", len(resultados))
+
+    return resultados
