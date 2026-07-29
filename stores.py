@@ -1,7 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
+from duckduckgo_search import DDGS
 import re
-from urllib.parse import quote
 
 
 def buscar_precos():
@@ -13,62 +11,53 @@ def buscar_precos():
 
     resultados = []
 
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
 
     for produto in produtos:
 
-        url = "https://www.google.com/search?q=" + quote(produto)
+        with DDGS() as ddgs:
 
-        resposta = requests.get(
-            url,
-            headers=headers,
-            timeout=10
-        )
-
-        soup = BeautifulSoup(
-            resposta.text,
-            "html.parser"
-        )
-
-        texto = soup.get_text(
-            " ",
-            strip=True
-        )
-
-
-        precos = re.findall(
-            r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
-            texto
-        )
-
-
-        print(texto[:1000])
-        if precos:
-
-            preco_texto = precos[0]
-
-            preco = (
-                preco_texto
-                .replace("R$", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .strip()
+            pesquisas = ddgs.text(
+                produto,
+                max_results=5
             )
 
 
-            resultados.append({
+            for resultado in pesquisas:
 
-                "nome": produto.replace(" preço", ""),
+                texto = resultado.get("title", "") + " " + resultado.get("body", "")
 
-                "preco": float(preco),
+                precos = re.findall(
+                    r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
+                    texto
+                )
 
-                "loja": "Pesquisa Google",
 
-                "link": url
+                if precos:
 
-            })
+                    preco_texto = precos[0]
+
+                    preco = (
+                        preco_texto
+                        .replace("R$", "")
+                        .replace(".", "")
+                        .replace(",", ".")
+                        .strip()
+                    )
+
+
+                    resultados.append({
+
+                        "nome": produto.replace(" preço", ""),
+
+                        "preco": float(preco),
+
+                        "loja": resultado.get("title", "Loja encontrada"),
+
+                        "link": resultado.get("href", "")
+
+                    })
+
+                    break
 
 
     return resultados
