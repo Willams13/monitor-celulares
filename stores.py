@@ -44,6 +44,7 @@ def buscar_precos():
         )
 
 
+        print(texto[:1000])
         if precos:
 
             preco_texto = precos[0]
