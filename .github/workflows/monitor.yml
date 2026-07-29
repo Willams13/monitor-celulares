@@ -19,12 +19,12 @@ jobs:
           python-version: "3.12"
 
       - name: Instalar dependências
-        run: |
+        run: python teste_tudocelular.py
           pip install -r requirements.txt
 
-      - name: Executar monitor
+      - name: Testar TudoCelular
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: |
-          python monitor.py
+        run: 
+          python teste_tudocelular.py
