@@ -6,13 +6,19 @@ from telegram_bot import enviar_mensagem
 produtos = buscar_precos()
 
 
+if not produtos:
+
+    enviar_mensagem(
+        "⚠️ Monitor executado.\n\nNenhuma oferta encontrada nesta verificação."
+    )
+
+
 for produto in produtos:
 
     nome = produto["nome"]
     preco = produto["preco"]
     loja = produto["loja"]
     link = produto["link"]
-
 
     if preco <= TARGET_PRICE:
 
@@ -21,9 +27,9 @@ for produto in produtos:
 
 📱 {nome}
 
-💰 R$ {preco}
+💰 R$ {preco:.2f}
 
-🎯 Seu limite: R$ {TARGET_PRICE}
+🎯 Limite: R$ {TARGET_PRICE}
 
 🏪 {loja}
 
@@ -37,7 +43,7 @@ for produto in produtos:
 
 📱 {nome}
 
-💰 R$ {preco}
+💰 R$ {preco:.2f}
 
 🎯 Preço alvo: R$ {TARGET_PRICE}
 
@@ -45,6 +51,5 @@ for produto in produtos:
 
 🔗 {link}
 """
-
 
     enviar_mensagem(mensagem)
