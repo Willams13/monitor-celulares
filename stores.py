@@ -1,7 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
-import re
-from urllib.parse import quote
 
 
 def buscar_precos():
@@ -13,53 +10,40 @@ def buscar_precos():
 
     resultados = []
 
+
     for produto in produtos:
 
-        url = "https://www.google.com/search?q=" + quote(produto + " preço")
+        url = "https://api.mercadolibre.com/sites/MLB/search"
 
-        headers = {
-            "User-Agent": "Mozilla/5.0"
+        parametros = {
+            "q": produto,
+            "limit": 5
         }
 
-        resposta = requests.get(url, headers=headers)
 
-        soup = BeautifulSoup(resposta.text, "html.parser")
-
-        texto = soup.get_text(" ", strip=True)
-
-        print("Produto pesquisado:", produto)
-        print("Texto recebido:", texto[:300])
-
-
-        precos = re.findall(
-            r"R\$ ?\d{1,4}(?:\.\d{3})?(?:,\d{2})?",
-            texto
+        resposta = requests.get(
+            url,
+            params=parametros,
+            timeout=10
         )
 
 
-        print("Preços encontrados:", precos)
+        dados = resposta.json()
 
 
-        if precos:
-
-            preco_texto = precos[0]
-
-            preco = (
-                preco_texto
-                .replace("R$", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .strip()
-            )
+        for item in dados.get("results", []):
 
             resultados.append({
-                "nome": produto,
-                "preco": float(preco),
-                "loja": "Pesquisa",
-                "link": url
+
+                "nome": item["title"],
+
+                "preco": item["price"],
+
+                "loja": "Mercado Livre",
+
+                "link": item["permalink"]
+
             })
 
-
-    print("Total de ofertas:", len(resultados))
 
     return resultados
