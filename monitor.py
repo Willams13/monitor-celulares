@@ -3,7 +3,16 @@ from stores import buscar_precos
 from telegram_bot import enviar_mensagem
 
 
-produtos = buscar_precos()
+try:
+    produtos = buscar_precos()
+
+except Exception as erro:
+
+    enviar_mensagem(
+        f"❌ Erro na busca:\n\n{erro}"
+    )
+
+    produtos = []
 
 
 if not produtos:
@@ -15,10 +24,11 @@ if not produtos:
 
 for produto in produtos:
 
-    nome = produto["nome"]
-    preco = produto["preco"]
-    loja = produto["loja"]
-    link = produto["link"]
+    nome = produto.get("nome", "Produto")
+    preco = produto.get("preco", 0)
+    loja = produto.get("loja", "Não informado")
+    link = produto.get("link", "")
+
 
     if preco <= TARGET_PRICE:
 
@@ -51,5 +61,6 @@ for produto in produtos:
 
 🔗 {link}
 """
+
 
     enviar_mensagem(mensagem)
